@@ -1,8 +1,15 @@
-{ pkgs, ... }:
-site-info-fn:
+pkgsSet:
+{ system
+, name ? "site"
+# src is never used directly, so this only gets triggered if src is not defined *and* one of website-src or builder-src is not defined
+, src ? throw "For hakyll-flake.gen you must define either `src` or `website-src` and `builder-src`"
+, website-src ? src
+, builder-src ? src
+, buildInputs ? []
+}:
 let
-  site-info = pkgs.callPackage site-info-fn { };
-  builder = pkgs.haskellPackages.callCabal2nix "${site-info.name}" "${site-info.builder-src}" { };
+  pkgs = pkgsSet.${system};
+  builder = pkgs.haskellPackages.callCabal2nix "${name}" "${builder-src}" { };
   haskell-env = pkgs.haskellPackages.ghcWithHoogle (
     hp: with hp;
       [ haskell-language-server cabal-install ] ++ builder.buildInputs
@@ -11,16 +18,16 @@ in rec {
   packages = {
     inherit builder;
     website = pkgs.stdenv.mkDerivation {
-      name = site-info.name;
-      buildInputs = [ builder ] ++ site-info.buildInputs;
-      src = site-info.website-src;
+      inherit name;
+      buildInputs = [ builder ] ++ buildInputs;
+      src = website-src;
       LANG = "en_US.UTF-8";
       LC_ALL = "en_US.UTF-8";
       LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
       # don't look in caches for this; speeds things up a little
       allowSubstitutes = false;
       buildPhase = ''
-        ${site-info.name} build
+        ${name} build
       '';
       installPhase = ''
         mkdir -p $out/
@@ -29,7 +36,7 @@ in rec {
       dontStrip = true;
     };
   };
-  defaultPackage = builder;
+  defaultPackage = packages.website;
   devShell = pkgs.mkShell {
     name = "website-env";
     buildInputs = [ haskell-env ];
@@ -46,6 +53,6 @@ in rec {
   };
   defaultApp = {
     type = "app";
-    program = "${builder}/bin/${site-info.name}";
+    program = "${builder}/bin/${name}";
   };
 }

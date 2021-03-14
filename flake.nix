@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
-    flake-utils.url = "github:numtide/flake-utils";
 
     hakyll-src = {
       url = "github:jaspervdj/hakyll";
@@ -15,24 +14,35 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, hakyll-src, hakyll-sass-src }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-          # need the most recent hakyll and hakyll-sass
-          overlays = [
-            (self: super: {
-              haskellPackages = super.haskellPackages.extend (hsSelf: hsSuper: {
-                hakyll = hsSuper.callCabal2nix "hakyll" "${hakyll-src}" { };
-                hakyll-sass = hsSuper.callCabal2nix "hakyll-sass" "${hakyll-sass-src}" { };
-              });
-            })
-          ];
-        };
-      in {
-        gen = pkgs.callPackage ./. { };
-      }
-    );
+  outputs = { self, nixpkgs, hakyll-src, hakyll-sass-src }:
+    let
+      # taken from nixpkgs flake.nix
+      systems = [
+        "x86_64-linux"
+        "i686-linux"
+        "x86_64-darwin"
+        "aarch64-linux"
+        "armv6l-linux"
+        "armv7l-linux"
+      ];
+
+      # taken from nixpkgs flake.nix
+      forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f system);
+
+      overlay = (self: super: {
+        haskellPackages = super.haskellPackages.extend (hsSelf: hsSuper: {
+          hakyll = hsSuper.callCabal2nix "hakyll" "${hakyll-src}" { };
+          hakyll-sass = hsSuper.callCabal2nix "hakyll-sass" "${hakyll-sass-src}" { };
+        });
+      });
+
+      overlays = [ overlay ];
+
+      # this is just nixpkgs.legacyPackages but with an overlay
+      pkgs = forAllSystems (system: import nixpkgs { inherit system overlays; });
+    in
+      {
+        inherit pkgs overlay overlays;
+        gen = import ./gen.nix pkgs;
+      };
 }
