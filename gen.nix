@@ -1,15 +1,12 @@
 pkgsSet:
 { system
 , name ? "site"
-# src is never used directly, so this only gets triggered if src is not defined *and* one of website-src or builder-src is not defined
-, src ? throw "For hakyll-flake.gen you must define either `src` or `website-src` and `builder-src`"
-, website-src ? src
-, builder-src ? src
+, src
 , buildInputs ? []
 }:
 let
   pkgs = pkgsSet.${system};
-  builder = pkgs.haskellPackages.callCabal2nix "${name}" "${builder-src}" { };
+  builder = pkgs.haskellPackages.callCabal2nix "${name}" "${src}" { };
   haskell-env = pkgs.haskellPackages.ghcWithHoogle (
     hp: with hp;
       [ haskell-language-server cabal-install ] ++ builder.buildInputs
@@ -18,9 +15,8 @@ in rec {
   packages = {
     inherit builder;
     website = pkgs.stdenv.mkDerivation {
-      inherit name;
+      inherit name src;
       buildInputs = [ builder ] ++ buildInputs;
-      src = website-src;
       LANG = "en_US.UTF-8";
       LC_ALL = "en_US.UTF-8";
       LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";
