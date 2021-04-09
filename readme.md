@@ -7,9 +7,9 @@ Use this to easily build your hakyll websites using nix flakes.
 - `system`: the system to build for.
 - `name`: the name of website. this must also be the name of the haskell project and executable generated.
 - `src`: the source directory (usually `./.`), which must contain at a minimum your `package.yaml` or `project-name.cabal` file.
-- `buildInputs` (optional): any runtime inputs the builder needs to build the website.
+- `websiteBuildInputs` (optional): any runtime inputs the builder needs to build the website.
 
-`hakyll-flakes.overlay` is the overlay that `hakyll-flakes` uses internally to get hakyll working (this will not work on an arbitrary version of nixpkgs), and `hakyll-flake.pkgs` is the legacyPackages that `hakyll-flakes` uses internally (this should always work). If you want to use one consistent nixpkgs set, you can set `buildInputs = with hakyll-flakes.pkgs.${system}; [ ... ]`. Alternatively, you can use your own nixpkgs set for these inputs, there's no reason they need to be the same.
+`hakyll-flakes.overlay` is the overlay that `hakyll-flakes` uses internally to get hakyll working (this will not work on an arbitrary version of nixpkgs), and `hakyll-flake.pkgs` is the legacyPackages that `hakyll-flakes` uses internally (this should always work). If you want to use one consistent nixpkgs set, you can set `websiteBuildInputs = with hakyll-flakes.pkgs.${system}; [ ... ]`. Alternatively, you can use your own nixpkgs set for these inputs, there's no reason they need to be the same.
 
 # Example
 
