@@ -34,7 +34,7 @@ in rec {
   };
   defaultPackage = packages.website;
   devShell = pkgs.mkShell {
-    name = "website-env";
+    name = "${name}-env";
     buildInputs = [ haskell-env ];
 
     shellHook = ''
