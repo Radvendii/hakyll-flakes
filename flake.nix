@@ -2,14 +2,14 @@
   description = "Hakyll Website";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs";
+    nixpkgs.url = "nixpkgs/20.09";
 
     hakyll-src = {
-      url = "github:jaspervdj/hakyll";
+      url = "github:jaspervdj/hakyll/v4.13.4.1";
       flake = false;
     };
     hakyll-sass-src = {
-      url = "github:meoblast001/hakyll-sass";
+      url = "github:meoblast001/hakyll-sass/release-0.2.4";
       flake = false;
     };
   };
@@ -43,6 +43,12 @@
     in
       {
         inherit pkgs overlay overlays;
-        gen = import ./gen.nix pkgs;
+        lib = rec {
+          mkBuilderPackage = mkAllOutputs.packages.builder;
+          mkWebsitePackage = mkAllOutputs.packages.website;
+          mkDevShell = mkAllOutputs.devShell;
+          mkApp = mkAllOutputs.defaultApp;
+          mkAllOutputs = import ./gen.nix pkgs;
+        };
       };
 }

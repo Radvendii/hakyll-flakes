@@ -1,15 +1,15 @@
-# hakyll-flake-gen
+# hakyll-flakes
 
-Use this to easily build your hakyll websites using nix.
+Use this to easily build your hakyll websites using nix flakes.
 
-`hakyll-flake.gen` takes in a set with the following fields:
+`hakyll-flakes.lib.mk*` takes in a set with the following fields:
 
 - `system`: the system to build for.
 - `name`: the name of website. this must also be the name of the haskell project and executable generated.
 - `src`: the source directory (usually `./.`), which must contain at a minimum your `package.yaml` or `project-name.cabal` file.
 - `buildInputs` (optional): any runtime inputs the builder needs to build the website.
 
-`hakyll-flake.overlay` is the overlay that `hakyll-flake-gen` uses internally to get hakyll working (this is not guaranteed to work on the most recent version of nixpkgs though), and `hakyll-flake.pkgs` is the legacyPackages that `hakyll-flake-gen` uses internally (this should always work). If you want to use one consistent nixpkgs set, you can set `buildInputs = with hakyll-flake.pkgs.${system}; [ ... ]`. Alternatively, you can use your own nixpkgs set for these inputs, there's no reason they need to be the same.
+`hakyll-flakes.overlay` is the overlay that `hakyll-flakes` uses internally to get hakyll working (this will not work on an arbitrary version of nixpkgs), and `hakyll-flake.pkgs` is the legacyPackages that `hakyll-flakes` uses internally (this should always work). If you want to use one consistent nixpkgs set, you can set `buildInputs = with hakyll-flakes.pkgs.${system}; [ ... ]`. Alternatively, you can use your own nixpkgs set for these inputs, there's no reason they need to be the same.
 
 # Example
 
@@ -24,18 +24,16 @@ Use this to easily build your hakyll websites using nix.
   outputs = { self, hakyll-flake, flake-utils, nixpkgs }:
     flake-utils.lib.eachDefaultSystem (
       system:
-      hakyll-flake.gen (
-        {
-          inherit system;
-          name = "my-website";
-          src = ./.;
-          buildInputs = with nixpkgs.legacyPackages.${system}; [
-            rubber
-            texlive.combined.scheme-full
-            poppler_utils
-          ];
-        }
-      )
+      hakyll-flakes.mkAllOutputs {
+        inherit system;
+        name = "my-website";
+        src = ./.;
+        buildInputs = with nixpkgs.legacyPackages.${system}; [
+          rubber
+          texlive.combined.scheme-full
+          poppler_utils
+        ];
+      }
     );
 }
 ```
@@ -68,3 +66,5 @@ Then from the top level directory you can run a few different commands:
 - `nix build .#website` (or just `nix build`) this goes through the whole process for you and simply produces a `result/` symlink with your compiled website inside.
 - `nix build .#builder` this builds the website *builder*, your hakyll-based `site.hs` file. `You can find it at result/bin/<project name>`.
 - `nix run . -- watch` This will compile and run your website builder, creating the `_site` directory and loading the website at `localhost:8000`. It will also rebuild the website if you change the files (but not if you change `site.hs`)
+
+You can pick out the individual outputs you want with `mkBuilderPackage`, `mkWebsitePackage`, `mkDevShell`, and `mkApp`.
