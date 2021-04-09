@@ -2,7 +2,7 @@ pkgsSet:
 { system
 , name ? "site"
 , src
-, buildInputs ? []
+, websiteBuildInputs ? []
 }:
 let
   pkgs = pkgsSet.${system};
@@ -16,7 +16,7 @@ in rec {
     inherit builder;
     website = pkgs.stdenv.mkDerivation {
       inherit name src;
-      buildInputs = [ builder ] ++ buildInputs;
+      buildInputs = [ builder ] ++ websiteBuildInputs;
       LANG = "en_US.UTF-8";
       LC_ALL = "en_US.UTF-8";
       LOCALE_ARCHIVE = "${pkgs.glibcLocales}/lib/locale/locale-archive";

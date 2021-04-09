@@ -28,7 +28,7 @@ Use this to easily build your hakyll websites using nix flakes.
         inherit system;
         name = "my-website";
         src = ./.;
-        buildInputs = with nixpkgs.legacyPackages.${system}; [
+        websiteBuildInputs = with nixpkgs.legacyPackages.${system}; [
           rubber
           texlive.combined.scheme-full
           poppler_utils
