@@ -18,10 +18,10 @@ Use this to easily build your hakyll websites using nix flakes.
 {
   description = "My Website";
   inputs.nixpkgs.url = "github:nixos/nixpkgs";
-  inputs.hakyll-flake.url = "github:Radvendii/hakyll-flake-gen";
+  inputs.hakyll-flakes.url = "github:Radvendii/hakyll-flakes";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, hakyll-flake, flake-utils, nixpkgs }:
+  outputs = { self, hakyll-flakes, flake-utils, nixpkgs }:
     flake-utils.lib.eachDefaultSystem (
       system:
       hakyll-flakes.mkAllOutputs {
