@@ -44,10 +44,10 @@
       {
         inherit pkgs overlay overlays;
         lib = rec {
-          mkBuilderPackage = mkAllOutputs.packages.builder;
-          mkWebsitePackage = mkAllOutputs.packages.website;
-          mkDevShell = mkAllOutputs.devShell;
-          mkApp = mkAllOutputs.defaultApp;
+          mkBuilderPackage = args: (mkAllOutputs args).packages.builder;
+          mkWebsitePackage = args: (mkAllOutputs args).packages.website;
+          mkDevShell       = args: (mkAllOutputs args).devShell;
+          mkApp            = args: (mkAllOutputs args).defaultApp;
           mkAllOutputs = import ./gen.nix pkgs;
         };
       };
