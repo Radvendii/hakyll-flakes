@@ -24,7 +24,7 @@ Use this to easily build your hakyll websites using nix flakes.
   outputs = { self, hakyll-flakes, flake-utils, nixpkgs }:
     flake-utils.lib.eachDefaultSystem (
       system:
-      hakyll-flakes.mkAllOutputs {
+      hakyll-flakes.lib.mkAllOutputs {
         inherit system;
         name = "my-website";
         src = ./.;
