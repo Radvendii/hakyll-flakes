@@ -2,19 +2,21 @@
   description = "Hakyll Website";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/20.09";
+    nixpkgs.url = "nixpkgs/nixos-23.05";
 
-    hakyll-src = {
-      url = "github:jaspervdj/hakyll/v4.13.4.1";
-      flake = false;
-    };
-    hakyll-sass-src = {
-      url = "github:meoblast001/hakyll-sass/release-0.2.4";
-      flake = false;
-    };
+    # hakyll-src = {
+    #   url = "github:jaspervdj/hakyll/v4.13.4.1";
+    #   flake = false;
+    # };
+    # hakyll-sass-src = {
+    #   url = "github:meoblast001/hakyll-sass/release-0.2.4";
+    #   flake = false;
+    # };
   };
 
-  outputs = { self, nixpkgs, hakyll-src, hakyll-sass-src }:
+  outputs = { self, nixpkgs
+  # , hakyll-src, hakyll-sass-src 
+  }:
     let
       # taken from nixpkgs flake.nix
       systems = [
@@ -31,8 +33,8 @@
 
       overlay = (self: super: {
         haskellPackages = super.haskellPackages.extend (hsSelf: hsSuper: {
-          hakyll = hsSuper.callCabal2nix "hakyll" "${hakyll-src}" { };
-          hakyll-sass = hsSuper.callCabal2nix "hakyll-sass" "${hakyll-sass-src}" { };
+          # hakyll = hsSuper.callCabal2nix "hakyll" "${hakyll-src}" { };
+          # hakyll-sass = hsSuper.callCabal2nix "hakyll-sass" "${hakyll-sass-src}" { };
         });
       });
 
