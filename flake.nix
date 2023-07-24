@@ -4,6 +4,10 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-23.05";
 
+    # these aren't needed in 23.05, but often a few dependencies have broken
+    # versions. this (plus the commented out code below)  is the way one would
+    # fix them
+    
     # hakyll-src = {
     #   url = "github:jaspervdj/hakyll/v4.13.4.1";
     #   flake = false;
