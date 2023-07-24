@@ -11,9 +11,10 @@ let
     hp: with hp;
       [ haskell-language-server cabal-install ] ++ builder.buildInputs
   );
-in rec {
-  packages = {
+in {
+  packages = rec {
     inherit builder;
+    default = website;
     website = pkgs.stdenv.mkDerivation {
       inherit name src;
       buildInputs = [ builder ] ++ websiteBuildInputs;
@@ -32,8 +33,7 @@ in rec {
       dontStrip = true;
     };
   };
-  defaultPackage = packages.website;
-  devShell = pkgs.mkShell {
+  devShells.default = pkgs.mkShell {
     name = "${name}-env";
     buildInputs = [ haskell-env ];
 
