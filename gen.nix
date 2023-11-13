@@ -35,7 +35,7 @@ in {
   };
   devShells.default = pkgs.mkShell {
     name = "${name}-env";
-    buildInputs = [ haskell-env ];
+    buildInputs = [ haskell-env ] ++ websiteBuildInputs;
 
     shellHook = ''
       export HAKYLL_ENV="development"
