@@ -54,7 +54,7 @@
           mkWebsitePackage = args: (mkAllOutputs args).packages.website;
           mkDevShell       = args: (mkAllOutputs args).devShell;
           mkApp            = args: (mkAllOutputs args).defaultApp;
-          mkAllOutputs = import ./gen.nix pkgs;
+          mkAllOutputs = import ./gen.nix pkgs.${system};
         };
       };
 }

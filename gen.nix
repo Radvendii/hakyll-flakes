@@ -1,11 +1,9 @@
-pkgsSet:
-{ system
-, name ? "site"
+pkgs:
+{ name ? "site"
 , src
 , websiteBuildInputs ? []
 }:
 let
-  pkgs = pkgsSet.${system};
   builder = pkgs.haskellPackages.callCabal2nix "${name}" "${src}" { };
   haskell-env = pkgs.haskellPackages.ghcWithHoogle (
     hp: with hp;
