@@ -25,8 +25,7 @@ in {
         ${name} build
       '';
       installPhase = ''
-        mkdir -p $out/
-        cp -R _site/* $out/
+        cp -R _site $out
       '';
       dontStrip = true;
     };
