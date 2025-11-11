@@ -1,0 +1,8 @@
+name: my-website
+
+dependencies:
+    - base
+    - hakyll
+
+executable:
+    main: site.hs

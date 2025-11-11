@@ -1,0 +1,6 @@
+_cache/
+_site/
+.stack-work/
+dist/
+result*
+.direnv
